@@ -1,68 +1,74 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Steps for building this application with Amplify
 
-## Available Scripts
+1. Clone the repo
+2. Install amplify in your computer and configure it (https://docs.amplify.aws/start/getting-started/installation/q/integration/react)
+3. Install this app in your computer 
+````
+$ npm install
+`````
 
-In the project directory, you can run:
+4. Run this app
+```
+$ npm start
+```
 
-### `npm start`
+5. Initalize this app with amplify. Follow the steps in the console.
+````
+$ amplify init
+```
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+6. Add authentication - create a default configuration with username
+````
+$ amplify add auth
+```
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+7. Push the changes to the cloud
+````
+$ amplify push
+````
 
-### `npm test`
+8. Create the front-end for the authentication
+`````
+$ cp base/App-01.js src/App.js
+$ cp base/App-01.css src/App.css
+$ cp base/index-01.html public/index.html
+````
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+9. After the changes were pushed to the cloud you can test your app and create an account.
 
-### `npm run build`
+10. Add an GraphQL API with Cognito User pools as auth. Pick that you dont have an annotated graphql schema and that you want help with the schema creation.
+ 
+````
+$ amplify add api
+`````
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Copy this schema in the schema.graphql file that pops up. 
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+`````
+type Note @model @auth(rules: [{allow: owner}]) {
+	id: ID!
+	note: String!
+}
+`````
+11. Then push the changes to the cloud. Accept all the defaults and continue. 
+````
+$ amplify push
+````
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+12. Modify the frontend to have the api.
 
-### `npm run eject`
+`````
+$ cp base/App-02.js src/App.js
+````
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+13. When the changes are all in the cloud test your page. 
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+14. If you want to add search. You can go and modify your graphql schema. 
+´´´
+type Note @model @auth(rules: [{allow: owner}]) @searchable {
+	id: ID!
+	note: String!
+}
+´´´´
+and then push the changes to the cloud
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
