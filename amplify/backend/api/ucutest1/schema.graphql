@@ -1,0 +1,5 @@
+type Note @model @auth(rules: [{allow: private}]) {
+  id: ID!
+  note: String!
+}
+ 

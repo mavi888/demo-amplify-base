@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import Amplify, { API, graphqlOperation } from 'aws-amplify';
-import { listNotes } from './graphql/queries';
-import { createNote, deleteNote } from './graphql/mutations';
+import Amplify from 'aws-amplify';
+import { DataStore } from '@aws-amplify/datastore';
+import { Note } from './models';
 
 import { AmplifyAuthenticator, AmplifySignOut } from '@aws-amplify/ui-react';
 import awsExports from "./aws-exports";
@@ -91,22 +91,25 @@ class App extends Component {
   }
 
   async componentDidMount(){
-    var result = await API.graphql(graphqlOperation(listNotes));
-    this.setState( { notes: result.data.listNotes.items } )
+    const notes = await DataStore.query(Note);
+    this.setState( { notes: notes } )
   }  
 
   deleteNote = async (note) => {
-    const id = {
-      id: note.id
-    }
-    await API.graphql(graphqlOperation(deleteNote, {input:id}));
+    const modelToDelete = await DataStore.query(Note, note.id);
+    DataStore.delete(modelToDelete);
+
     this.setState( { notes: this.state.notes.filter( (value, index, arr) => { return value.id !== note.id; }) } );
   }
   
   addNote = async (note) => {
-    var result = await API.graphql(graphqlOperation(createNote, {input:note}));
-    this.state.notes.push(result.data.createNote)
-    this.setState( { notes: this.state.notes } )
+    const result = await DataStore.save(
+      new Note({
+        "note": note.note
+      })
+    ); 
+    this.state.notes.push(result)
+    this.setState( { notes: this.state.notes } ) 
   }
 
   render() {
